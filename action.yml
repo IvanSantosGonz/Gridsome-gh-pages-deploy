@@ -1,0 +1,38 @@
+name: Gridsome gh-pages deploy
+description: Github Action to automatize the deployment of a Gridsome application to Github pages
+
+inputs:
+  github-user-email:
+    description: The email of the github user
+    required: true
+  gh-token:
+    description: Github token needed to deploy the project to gh-pages
+    required: true
+  build-dir:
+    description: directory of the project build
+    required: false
+    default: dist
+  cname:
+    description: CNAME of a custom domain
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+
+    - run: sudo npm install -g @gridsome/cli
+      shell: bash
+
+    - run: npm i
+      shell: bash
+
+    - run: gridsome build
+      shell: bash
+      
+    uses: Cecilapp/GitHub-Pages-deploy@master
+    env:
+      EMAIL: ${{ inputs.github-user-email }}
+      GH_TOKEN: ${{ inputs.gh-token }}
+      BUILD_DIR: ${{ inputs.build-dir }}
+      CNAME: ${{ inputs.cname }}
+
